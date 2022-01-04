@@ -3,7 +3,13 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, magrittr, gt, gtExtras)
 ```
 
-# Guatemala's trade flows with four specific commercial partners
+# Guatemala's trade flows with four of its main commercial partners
+
+Almost all of this code is an adaptation of [\@leeolney3](https://twitter.com/leeolney3) [#TidyTuesday](https://twitter.com/hashtag/TidyTuesday?src=hashtag_click) submission, which is itself an adaptation of [\@BjnNowak](https://twitter.com/BjnNowak) tutorials. For me it was a great opportunity to getting familiar with the `gt` and `gtExtras` packages.
+
+## (a) Import data
+
+The data set used here was made with the API wrapper for the United Nations Comtrade Database, `comtradr`. See <https://git.io/JSDlL> for details on the data extraction process.
 
 ```{r}
 data_raw <- 
@@ -11,8 +17,11 @@ data_raw <-
   select(partner, year, trade_flow, trade_value_usd) %>% 
   pivot_wider(names_from = trade_flow, values_from = trade_value_usd) %>% 
   janitor::clean_names() %>% 
-  arrange(partner, year)
+  arrange(partner, year) %>% 
+  rename(imports = import, exports = export)
 ```
+
+## (b) Data wrangling
 
 ```{r}
 abs <-
@@ -21,8 +30,8 @@ abs <-
 
 rel <-
   data_raw %>%
-  mutate(import = (import / lag(import) - 1),
-         export = (export / lag(export) - 1)) %>%
+  mutate(imports = (imports / lag(imports) - 1),
+         exports = (exports / lag(exports) - 1)) %>%
   replace(is.na(.), 0) %>%
   pivot_longer(3:4, values_to = "relative")
 
@@ -39,11 +48,13 @@ data <-
   )
 ```
 
+## (c) Plots
+
 ```{r}
 abs_fun <- function(data) {
   trend <- ggplot(data, aes(x = year, y = absolute, color = fct_rev(name))) +
     geom_line(size = 3.5) +
-    scale_color_manual(values = c("#009A88","#EE7733")) +
+    scale_color_manual(values = c("#323E40","#F2A922")) +
     coord_cartesian(clip = "off") +
     cowplot::theme_minimal_grid(35) +
     theme(legend.position = "none",
@@ -68,7 +79,7 @@ rel_fun <- function(data) {
     color = fct_rev(name)
   )) +
     geom_line(size = 3.5) +
-    scale_color_manual(values = c("#009A88", "#EE7733")) +
+    scale_color_manual(values = c("#323E40","#F2A922")) +
     scale_y_continuous(
       label = scales::percent
     ) +
@@ -87,6 +98,8 @@ rel_plots = data %>%
   arrange(rank)
 ```
 
+## (d) Table
+
 ```{r}
 base <- 
   data_raw %>%
@@ -99,17 +112,17 @@ base <-
       partner == "El Salvador" ~ "https://hatscripts.github.io/circle-flags/flags/sv.svg"
     )
   ) %>%
-  select(fl, partner, import, export) 
+  select(fl, partner, imports, exports) 
 ```
 
 ```{r}
 gt <-  
   base %>%
-  arrange(desc(import)) %>%
+  arrange(desc(imports)) %>%
   mutate(absolute = NA,
          relative = NA) %>%
   gt() %>%
-  gt_theme_538() %>%
+  gt_theme_nytimes() %>%
   # Add country flag
   gt_img_rows(fl) %>%
   # Add line plot
@@ -119,7 +132,7 @@ gt <-
       purrr::map(abs_plots$gg,
                  gt::ggplot_image,
                  height = px(100),
-                 aspect_ratio = 1.6)
+                 aspect_ratio = 1.7)
     }
   ) %>%
   gt::text_transform(
@@ -134,30 +147,30 @@ gt <-
     }
   ) %>%
   # Spanner
-  tab_spanner(label = "2020", columns = import:export) %>%
+  tab_spanner(label = "2020", columns = imports:exports) %>%
   tab_spanner(label = "1995-2020", columns = absolute:relative) %>%
   # Column labels
   cols_label(
-    import = html("<span style = 'color:#009A88;'>import</span>"),
-    export = html("<span style = 'color:#EE7733;'>export</span>"),
+    imports = html("<span style = 'color:#323E40;'>imports</span>"),
+    exports = html("<span style = 'color:#F2A922;'>exports</span>"),
     absolute = html("Trend"),
     relative = html("Relative change"),
     fl = html(""),
     partner = html("Country")
   ) %>%
   # Format numbers
-  fmt_symbol_first(column = c("import", "export"), suffix = " MWh") %>%
+  fmt_symbol_first(column = c("imports", "exports"), suffix = "") %>%
   # Format first column text
   tab_style(style = list(cell_text(weight = "normal")),
             location = cells_body(columns = partner)) %>%
   # Header and source note
   tab_header(
-    title = "import-based vs. export-based energy use per person",
+    title = "Guatemala's trade flows with four of its main commercial partners",
     subtitle = md(
-      "export-based (trade-adjusted) energy use measures domestic energy use minus energy used to produce exported goods, plus energy used to produce imported goods, in megawatt-hour (MWh)."
+      " "
     )
   ) %>%
-  tab_source_note(source_note = gt::html("Data source: ourworldindata.org<br>#TidyTuesday Week 1")) %>%
+  tab_source_note(source_note = gt::html("Source: United Nations Comtrade Database")) %>%
   # Adjust sub-title font
   tab_style(style = list(cell_text(weight = "lighter")),
             locations = list(cells_title(groups = "subtitle")))  %>%
@@ -166,9 +179,9 @@ gt <-
   # Align column
   cols_align(columns = c(1, 3, 4),
              align = "center") %>%
-  cols_width(fl ~ px(25))
-```
+  cols_width(fl ~ px(25)) %>%
+  opt_table_font(font = c(google_font(name = "Noto Sans"),
+                          default_fonts()))
 
-```{r}
 gt
 ```
