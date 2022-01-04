@@ -1,0 +1,10 @@
+```{r}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, magrittr)
+```
+
+# Guatemala's trade flows with four specific commercial partners
+
+```{r}
+
+```
