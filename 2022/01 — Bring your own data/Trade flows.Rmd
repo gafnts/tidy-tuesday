@@ -9,7 +9,7 @@ pacman::p_load(tidyverse, magrittr, gt, gtExtras)
 data_raw <- 
   read_csv("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/01%20%E2%80%94%20Bring%20your%20own%20data/Data/data.csv") %>% 
   select(partner, year, trade_flow, trade_value_usd) %>% 
-  pivot_widerider(names_from = trade_flow, values_from = trade_value_usd) %>% 
+  pivot_wider(names_from = trade_flow, values_from = trade_value_usd) %>% 
   janitor::clean_names() %>% 
   arrange(partner, year)
 ```
@@ -103,7 +103,7 @@ base <-
 ```
 
 ```{r}
-gt1 <-  
+gt <-  
   base %>%
   arrange(desc(import)) %>%
   mutate(absolute = NA,
@@ -116,7 +116,7 @@ gt1 <-
   gt::text_transform(
     locations = cells_body(columns = absolute),
     fn = function(x) {
-      purrr::map(line_plot$gg,
+      purrr::map(abs_plots$gg,
                  gt::ggplot_image,
                  height = px(100),
                  aspect_ratio = 1.6)
@@ -126,7 +126,7 @@ gt1 <-
     locations = cells_body(columns = relative),
     fn = function(x) {
       purrr::map(
-        line_plot2$gg,
+        rel_plots$gg,
         gt::ggplot_image,
         height = px(100),
         aspect_ratio = 1.7
@@ -143,13 +143,13 @@ gt1 <-
     absolute = html("Trend"),
     relative = html("Relative change"),
     fl = html(""),
-    entity = html("Country")
+    partner = html("Country")
   ) %>%
   # Format numbers
   fmt_symbol_first(column = c("import", "export"), suffix = " MWh") %>%
   # Format first column text
   tab_style(style = list(cell_text(weight = "normal")),
-            location = cells_body(columns = entity)) %>%
+            location = cells_body(columns = partner)) %>%
   # Header and source note
   tab_header(
     title = "import-based vs. export-based energy use per person",
@@ -166,5 +166,9 @@ gt1 <-
   # Align column
   cols_align(columns = c(1, 3, 4),
              align = "center") %>%
-  cols_width(fl ~ px(25)) 
+  cols_width(fl ~ px(25))
+```
+
+```{r}
+gt
 ```
