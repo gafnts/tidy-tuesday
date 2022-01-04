@@ -1,9 +1,39 @@
 ```{r}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, magrittr)
+pacman::p_load(tidyverse, magrittr, gt)
 ```
 
 # Guatemala's trade flows with four specific commercial partners
+
+```{r}
+data_raw <- 
+  read_csv("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/01%20%E2%80%94%20Bring%20your%20own%20data/Data/data.csv") %>% 
+  select(partner, year, trade_flow, trade_value_usd) %>% 
+  pivot_wider(names_from = trade_flow, values_from = trade_value_usd) %>% 
+  janitor::clean_names() %>% 
+  arrange(partner, year)
+```
+
+```{r}
+abs <- 
+  data_raw %>% 
+  pivot_longer(3:4, values_to = "absolute")
+
+rel <- 
+  data_raw %>%
+  mutate(import = (import/lag(import) - 1),
+         export = (export/lag(export) - 1)) %>%
+  replace(is.na(.), 0) %>% 
+  pivot_longer(3:4, values_to = "relative")
+
+data <- 
+  abs %>% 
+  left_join(rel) %>% 
+  mutate(rank= case_when(partner == "USA" ~ 1,
+                         partner == "China" ~ 2,
+                         partner == "Mexico" ~ 3,
+                         partner == "El Salvador" ~ 4))
+```
 
 ```{r}
 
