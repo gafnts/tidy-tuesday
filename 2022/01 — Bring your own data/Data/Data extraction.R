@@ -1,12 +1,13 @@
 
 # (a) Dependencies ----
 
-if (!require("pacman")) install.packages("pacman")
-pacman::p_load(tidyverse, here, comtradr)
+library(tidyverse)
+library(comtradr)
+library(here)
 
 # (b) Extraction functions ----
 
-## Comtrade search parameters
+## Comtrade parameters
 search <-
   function(partner, year) {
     data <- ct_search(
@@ -31,25 +32,25 @@ get <-
       as_tibble()
   }
 
-## Export as .rds
+## Export as csv
 write <-
   function(data) {
     name <- deparse(substitute(data))
-    write_rds(data, file = paste0("../2022/01 — Bring your own data/Data/", name, ".rds"))
-  }
-
-write <-
-  function(data) {
-    name <- deparse(substitute(data))
-    write_rds(data, file = paste0(here::here(), "/2022/01 — Bring your own data/Data/", 
-                                  name, ".rds"))
+    write_csv(data,
+              file = paste0(
+                here::here(),
+                "/2022/01 — Bring your own data/Data/",
+                name,
+                ".csv"
+              ))
   }
 
 # (c) Data extraction ----
 
-df <-
-  get(partners = c("USA", "Mexico", "El Salvador", "China"),
-      years = c(1995:2020))
-write(df)
+data <-
+  get(
+    partners = c("USA", "Mexico", "El Salvador", "China"),
+    years = c(1995:2020)
+  )
 
-
+write(data)
