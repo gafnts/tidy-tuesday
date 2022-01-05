@@ -168,16 +168,20 @@ table <-
   tab_options(heading.title.font.size = "30px",
              heading.padding = "10px",
              footnotes.padding = "10px",
-             source_notes.font.size = "10px") %>%
+             source_notes.font.size = "10px",
+             column_labels.font.weight = "bold",
+             source_notes.padding = "10px") %>%
   cols_align(columns = c(1, 2, 3, 4, 5, 6),
              align = "center")  %>%
   tab_source_note(source_note = gt::html("Source: United Nations Comtrade Database")) %>% 
   opt_table_font(font = c(google_font(name = "Noto Sans"),
                           default_fonts()))
-
-table
 ```
 
 ```{r}
-gtsave(data = table, path = paste0(here::here(), "/2022/01 — Bring your own data/"))
+table %>%
+  gtsave(
+    "trade_flows.png",
+    path = paste0(here::here(), "/2022/01 — Bring your own data")
+  )
 ```
