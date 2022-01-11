@@ -1,5 +1,5 @@
 ```{r}
-pacman::p_load(tidyverse, here)
+pacman::p_load(tidyverse, here, sysfonts, cowplot)
 ```
 
 # Bee colonies
@@ -44,20 +44,22 @@ plot <-
 ## (c) Plot
 
 ```{r}
-plot %>% 
+f1 <- "Nunito Sans Regular"
+f2 <- "Nunito Sans Regular"
+```
+
+```{r}
+p <- 
+  plot %>% 
   ggplot(aes(x = year, y = value, fill = name)) +
-  geom_col() +
-  labs(title = "This is a aweseme title \nexplaining what up", 
-       subtitle = "And this is a explanation of the actual plot") + 
+  geom_col() + 
   scale_y_continuous(label = scales::comma,
                      breaks = seq(0, 8e6, by = 1e6)) + 
   scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021)) +
-  theme(title = element_text(size = 40, face = "bold", color = "#F2F2F2"),
-        plot.subtitle = element_text(size = 15, face = "bold", color = "gray"),
-        axis.title.x = element_blank(),
-        axis.text.x = element_text(color = "#F2F2F2", size = 17),
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_text(color = "#F2F2F2", size = 17, family = f2),
         axis.title.y = element_blank(),
-        axis.text.y = element_text(color = "#F2F2F2", size = 17),
+        axis.text.y = element_text(color = "#F2F2F2", size = 17, family = f2),
         legend.title = element_blank(),
         legend.text = element_text(size = 7),
         plot.background = element_rect(fill = "#1D2026", color = NA),
@@ -68,9 +70,57 @@ plot %>%
         panel.grid.minor.y = element_blank(),
         axis.ticks = element_line(size = 0),
         legend.position = "none",
-        plot.margin = margin(2.3, 2.3, 2.3, 2.3, "cm"),
-        panel.border = element_blank()) +
+        plot.margin = margin(6.3, 2, 2.3, 2, "cm"),
+        panel.border = element_blank(),
+        plot.tag.position = c(0.5, 1)) +
   scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
+
+ggdraw(p) +
+  draw_label(
+    "—",
+    hjust = 0,
+    x = .05,
+    y = .95,
+    size = 80,
+    color = "#F2F2F2",
+    fontfamily = f1
+  ) +
+  draw_label(
+    "This is an awesome title that explains",
+    hjust = 0,
+    x = .05,
+    y = .90,
+    size = 35,
+    color = "#F2F2F2",
+    fontfamily = f1
+  ) +
+  draw_label(
+    "something about bees",
+    hjust = 0,
+    x = .05,
+    y = .85,
+    size = 35,
+    color = "#F2F2F2",
+    fontfamily = f1
+  ) +
+  draw_label(
+    "Getting there!",
+    hjust = 0,
+    x = .05,
+    y = .79,
+    size = 20,
+    color = "gray",
+    fontfamily = f1
+  ) +
+  draw_label(
+    "Source: Source",
+    hjust = 0,
+    x = .74,
+    y = .05,
+    size = 20,
+    color = "gray",
+    fontfamily = f1
+  )
 
 ggsave(
   filename = "plot.png",
