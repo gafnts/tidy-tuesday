@@ -47,27 +47,38 @@ plot <-
 plot %>% 
   ggplot(aes(x = year, y = value, fill = name)) +
   geom_col() +
-  labs(title = "Bees", subtitle = "What up") + 
+  labs(title = "This is a aweseme title \nexplaining what up", 
+       subtitle = "And this is a explanation of the actual plot") + 
   scale_y_continuous(label = scales::comma,
                      breaks = seq(0, 8e6, by = 1e6)) + 
   scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021)) +
-  theme(title = element_text(size = 20, face = "bold", color = "#F2F2F2"),
+  theme(title = element_text(size = 40, face = "bold", color = "#F2F2F2"),
         plot.subtitle = element_text(size = 15, face = "bold", color = "gray"),
         axis.title.x = element_blank(),
-        axis.text.x = element_text(color = "#F2F2F2", size = 9),
+        axis.text.x = element_text(color = "#F2F2F2", size = 17),
         axis.title.y = element_blank(),
-        axis.text.y = element_text(color = "#F2F2F2", size = 9),
+        axis.text.y = element_text(color = "#F2F2F2", size = 17),
         legend.title = element_blank(),
         legend.text = element_text(size = 7),
-        plot.background = element_rect(fill = "#1D2026"),
+        plot.background = element_rect(fill = "#1D2026", color = NA),
         panel.background = element_rect(fill = "#1D2026"),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_line(color = "#F2F2F2", linetype = "dashed", size = .3),
+        panel.grid.major.y = element_line(color = "#F2F2F2", linetype = "dashed", size = .2),
         panel.grid.minor.y = element_blank(),
         axis.ticks = element_line(size = 0),
-        legend.position = "none") +
+        legend.position = "none",
+        plot.margin = margin(2.3, 2.3, 2.3, 2.3, "cm"),
+        panel.border = element_blank()) +
   scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
+
+ggsave(
+  filename = "plot.png",
+  path = here("2022", "(02) Bee colonies"),
+  dpi = 320,
+  height = 10,
+  width = 10
+)
 ```
 
 ```{r}
