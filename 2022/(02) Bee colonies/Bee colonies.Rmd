@@ -10,10 +10,6 @@ pacman::p_load(tidyverse, here, sysfonts, cowplot)
 colony <- 
   read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv") %>% 
   mutate_if(is.numeric, ~replace(., is.na(.), 0))
-
-stressor <- 
-  read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv") %>% 
-  mutate_if(is.numeric, ~replace(., is.na(.), 0))
 ```
 
 ## (b) Data wrangling
@@ -45,7 +41,7 @@ plot <-
 
 ```{r}
 f1 <- "Nunito Sans Regular"
-f2 <- "Nunito Sans Regular"
+f2 <- "Nunito Sans Light"
 ```
 
 ```{r}
@@ -55,20 +51,22 @@ p <-
   geom_col() + 
   scale_y_continuous(label = scales::comma,
                      breaks = seq(0, 8e6, by = 1e6)) + 
-  scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021)) +
+  scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021), 
+                   expand = c(0,0)) +
   theme(
-    axis.title.x = element_blank(),
+        # X axis
+        axis.title.x = element_blank(),
         axis.text.x = element_text(color = "#F2F2F2", size = 17, family = f2),
         axis.ticks.x = element_line(size = .5, color = "white"),
         axis.ticks.length.x = unit(0.2, "cm"),
+        # Y axis
         axis.title.y = element_blank(),
         axis.text.y = element_text(color = "#F2F2F2", size = 17, family = f2),
-        axis.ticks.y = element_line(size = 0),
+        axis.ticks.y = element_blank(),
         # Grid
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_line(color = "#F2F2F2", linetype = "dashed", size = .2),
-        panel.grid.minor.y = element_blank(),
+        panel.grid = element_line(color = "#F2F2F2", linetype = "dashed", size = .15),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x=element_blank(),
         # Legend
         legend.title = element_blank(),
         legend.text = element_text(size = 17, color = "gray", family = f2),
@@ -83,7 +81,8 @@ p <-
         panel.background = element_rect(fill = "#1D2026"),
         
         plot.margin = margin(6.3, 2, 2.2, 2, "cm")) +
-  scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
+  scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9")
+  )
 
 ggdraw(p) +
   draw_label(
@@ -132,16 +131,6 @@ ggdraw(p) +
     fontfamily = f1
   )
 
-ggsave(
-  filename = "plot.png",
-  path = here("2022", "(02) Bee colonies"),
-  dpi = 320,
-  height = 10,
-  width = 10
-)
-```
-
-```{r}
 ggsave(
   filename = "plot.png",
   path = here("2022", "(02) Bee colonies"),
