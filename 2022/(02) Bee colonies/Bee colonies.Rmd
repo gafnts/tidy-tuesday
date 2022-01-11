@@ -1,5 +1,5 @@
 ```{r}
-pacman::p_load(tidyverse, magrittr, ggstream)
+pacman::p_load(tidyverse, here)
 ```
 
 # Bee colonies
@@ -68,4 +68,18 @@ plot %>%
         axis.ticks = element_line(size = 0),
         legend.position = "none") +
   scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
+```
+
+```{r}
+ggsave(
+  filename = "plot.png"
+  path = here("2022", "02 — Bee colonies")),
+  dpi = 320,
+  height = 9.34,
+  width = 10
+)
+```
+
+```{r}
+ggsave()
 ```
