@@ -72,14 +72,10 @@ plot %>%
 
 ```{r}
 ggsave(
-  filename = "plot.png"
-  path = here("2022", "02 — Bee colonies")),
+  filename = "plot.png",
+  path = here("2022", "(02) Bee colonies"),
   dpi = 320,
-  height = 9.34,
+  height = 10,
   width = 10
 )
-```
-
-```{r}
-ggsave()
 ```
