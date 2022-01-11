@@ -1,0 +1,16 @@
+```{r}
+pacman::p_load(tidyverse)
+```
+
+# Bee colonies
+
+## (a) Import data
+
+```{r}
+colony <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv")
+stressor <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv")
+```
+
+```{r}
+
+```
