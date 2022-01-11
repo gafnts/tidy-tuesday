@@ -56,23 +56,33 @@ p <-
   scale_y_continuous(label = scales::comma,
                      breaks = seq(0, 8e6, by = 1e6)) + 
   scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021)) +
-  theme(axis.title.x = element_blank(),
+  theme(
+    axis.title.x = element_blank(),
         axis.text.x = element_text(color = "#F2F2F2", size = 17, family = f2),
+        axis.ticks.x = element_line(size = .5, color = "white"),
+        axis.ticks.length.x = unit(0.2, "cm"),
         axis.title.y = element_blank(),
         axis.text.y = element_text(color = "#F2F2F2", size = 17, family = f2),
-        legend.title = element_blank(),
-        legend.text = element_text(size = 7),
-        plot.background = element_rect(fill = "#1D2026", color = NA),
-        panel.background = element_rect(fill = "#1D2026"),
+        axis.ticks.y = element_line(size = 0),
+        # Grid
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
         panel.grid.major.y = element_line(color = "#F2F2F2", linetype = "dashed", size = .2),
         panel.grid.minor.y = element_blank(),
-        axis.ticks = element_line(size = 0),
-        legend.position = "none",
-        plot.margin = margin(6.3, 2, 2.3, 2, "cm"),
-        panel.border = element_blank(),
-        plot.tag.position = c(0.5, 1)) +
+        # Legend
+        legend.title = element_blank(),
+        legend.text = element_text(size = 17, color = "gray", family = f2),
+        legend.position = c(0.12, 1),
+        legend.background = element_rect(fill = NA),
+        legend.margin = margin(0, 0, 0, 0, "cm"),
+        legend.key = element_rect(fill = NA),
+        legend.key.size = unit(.65, "cm"),
+        legend.direction = "horizontal",
+        # Backgrounds
+        plot.background = element_rect(fill = "#1D2026", color = NA),
+        panel.background = element_rect(fill = "#1D2026"),
+        
+        plot.margin = margin(6.3, 2, 2.2, 2, "cm")) +
   scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
 
 ggdraw(p) +
