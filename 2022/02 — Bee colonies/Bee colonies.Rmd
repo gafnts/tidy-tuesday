@@ -1,5 +1,5 @@
 ```{r}
-pacman::p_load(tidyverse)
+pacman::p_load(tidyverse, magrittr, ggstream)
 ```
 
 # Bee colonies
@@ -7,10 +7,65 @@ pacman::p_load(tidyverse)
 ## (a) Import data
 
 ```{r}
-colony <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv")
-stressor <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv")
+colony <- 
+  read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv") %>% 
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+stressor <- 
+  read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv") %>% 
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
 ```
 
-```{r}
+## (b) Data wrangling
 
+```{r}
+plot <- 
+  colony %>%
+  mutate(
+    months = case_when(
+      months == "January-March" ~ "",
+      months == "April-June" ~ "Q2",
+      months == "July-September" ~ "Q3",
+      months == "October-December" ~ "Q4",
+    ),
+    year = paste0(year, "", months)
+  ) %>%
+  select(-months) %>%
+  group_by(year) %>%
+  summarise(
+    colony_n = sum(colony_n),
+    colony_lost = sum(colony_lost),
+    colony_reno = sum(colony_reno)
+  ) %>%
+  ungroup() %>%
+  pivot_longer(-year)
+```
+
+## (c) Plot
+
+```{r}
+plot %>% 
+  ggplot(aes(x = year, y = value, fill = name)) +
+  geom_col() +
+  labs(title = "Bees", subtitle = "What up") + 
+  scale_y_continuous(label = scales::comma,
+                     breaks = seq(0, 8e6, by = 1e6)) + 
+  scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021)) +
+  theme(title = element_text(size = 20, face = "bold", color = "#F2F2F2"),
+        plot.subtitle = element_text(size = 15, face = "bold", color = "gray"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(color = "#F2F2F2", size = 9),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(color = "#F2F2F2", size = 9),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 7),
+        plot.background = element_rect(fill = "#1D2026"),
+        panel.background = element_rect(fill = "#1D2026"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(color = "#F2F2F2", linetype = "dashed", size = .3),
+        panel.grid.minor.y = element_blank(),
+        axis.ticks = element_line(size = 0),
+        legend.position = "none") +
+  scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"))
 ```
