@@ -39,7 +39,7 @@ colonies <-
 
 ## (c) Plot *à la* Financial Times
 
-Inspired in: <https://www.instagram.com/p/CYWwHrSFtYD/>
+Reference: <https://www.instagram.com/p/CYWwHrSFtYD/>
 
 ```{r}
 f1 <- "Nunito Sans Regular"
@@ -108,7 +108,7 @@ ggdraw(plot) +
     fontfamily = f1
   ) +
   draw_label(
-    "US is greater than the number of those renovated",
+    "US is greater than the number of those renewed",
     hjust = 0,
     x = .05,
     y = .865,
