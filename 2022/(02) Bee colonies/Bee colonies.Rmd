@@ -15,7 +15,7 @@ colony <-
 ## (b) Data wrangling
 
 ```{r}
-plot <- 
+colonies <- 
   colony %>%
   mutate(
     months = case_when(
@@ -33,11 +33,13 @@ plot <-
     colony_lost = sum(colony_lost),
     colony_reno = sum(colony_reno)
   ) %>%
-  ungroup() %>%
+  ungroup() %>% 
   pivot_longer(-year)
 ```
 
-## (c) Plot
+## (c) Plot *à la* Financial Times
+
+Inspired in: <https://www.instagram.com/p/CYWwHrSFtYD/>
 
 ```{r}
 f1 <- "Nunito Sans Regular"
@@ -45,12 +47,13 @@ f2 <- "Nunito Sans Light"
 ```
 
 ```{r}
-p <- 
-  plot %>% 
+plot <- 
+  colonies %>% 
   ggplot(aes(x = year, y = value, fill = name)) +
   geom_col() + 
   scale_y_continuous(label = scales::comma,
-                     breaks = seq(0, 8e6, by = 1e6)) + 
+                     breaks = seq(0, 8e6, by = 1e6),
+                     expand = c(0.0080, 0)) + 
   scale_x_discrete(breaks = c(2015, 2016, 2017, 2018, 2019, 2020, 2021), 
                    expand = c(0,0)) +
   theme(
@@ -58,7 +61,7 @@ p <-
         axis.title.x = element_blank(),
         axis.text.x = element_text(color = "#F2F2F2", size = 17, family = f2),
         axis.ticks.x = element_line(size = .5, color = "white"),
-        axis.ticks.length.x = unit(0.2, "cm"),
+        axis.ticks.length.x = unit(0.25, "cm"),
         # Y axis
         axis.title.y = element_blank(),
         axis.text.y = element_text(color = "#F2F2F2", size = 17, family = f2),
@@ -66,11 +69,11 @@ p <-
         # Grid
         panel.grid = element_line(color = "#F2F2F2", linetype = "dashed", size = .15),
         panel.grid.minor = element_blank(),
-        panel.grid.major.x=element_blank(),
+        panel.grid.major.x = element_blank(),
         # Legend
         legend.title = element_blank(),
         legend.text = element_text(size = 17, color = "gray", family = f2),
-        legend.position = c(0.12, 1),
+        legend.position = c(0.275, 1.1),
         legend.background = element_rect(fill = NA),
         legend.margin = margin(0, 0, 0, 0, "cm"),
         legend.key = element_rect(fill = NA),
@@ -79,58 +82,61 @@ p <-
         # Backgrounds
         plot.background = element_rect(fill = "#1D2026", color = NA),
         panel.background = element_rect(fill = "#1D2026"),
-        
-        plot.margin = margin(6.3, 2, 2.2, 2, "cm")) +
-  scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9")
+        # General margin
+        plot.margin = margin(7.5, 2, 2.3, 2, "cm")) +
+  scale_fill_manual(values = c("#A6325C", "#F272A1", "#62C3D9"),
+                    labels = c("Colonies lost", "Number of colonies", "Colonies renovated")
   )
 
-ggdraw(p) +
+ggdraw(plot) +
   draw_label(
     "—",
     hjust = 0,
     x = .05,
-    y = .95,
-    size = 80,
+    y = .96,
+    size = 70,
     color = "#F2F2F2",
     fontfamily = f1
   ) +
   draw_label(
-    "This is an awesome title that explains",
+    "The number of bee colonies that are lost in the",
     hjust = 0,
     x = .05,
-    y = .90,
-    size = 35,
+    y = .91,
+    size = 28,
     color = "#F2F2F2",
     fontfamily = f1
   ) +
   draw_label(
-    "something about bees",
+    "US is greater than the number of those renovated",
     hjust = 0,
     x = .05,
-    y = .85,
-    size = 35,
+    y = .865,
+    size = 28,
     color = "#F2F2F2",
     fontfamily = f1
   ) +
   draw_label(
-    "Getting there!",
+    "Total number of existing, lost and renovated colonies",
     hjust = 0,
     x = .05,
-    y = .79,
-    size = 20,
+    y = .8,
+    size = 17,
     color = "gray",
     fontfamily = f1
   ) +
   draw_label(
-    "Source: Source",
+    "Source: United States Department of Agriculture",
     hjust = 0,
-    x = .74,
+    x = .414,
     y = .05,
-    size = 20,
+    size = 17,
     color = "gray",
     fontfamily = f1
   )
+```
 
+```{r}
 ggsave(
   filename = "plot.png",
   path = here("2022", "(02) Bee colonies"),
