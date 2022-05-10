@@ -1,7 +1,7 @@
 # NY Times bestsellers list
 
 ```{r}
-pacman::p_load(tidyverse, here, sysfonts, patchwork)
+pacman::p_load(tidyverse, here, sysfonts, patchwork, cowplot, ggimage)
 ```
 
 ## Import
@@ -29,14 +29,19 @@ f3 <- "Noto Sans"
 # Theme
 theme_bestsellers <- function(...) {
     theme(
+      plot.title = element_text(size = 16, 
+                                family = f2, 
+                                margin = margin(0, 0, 0, 0)),
       text = element_text(size = 16, family = f3),
       axis.title = element_blank(),
       axis.text.y = element_blank(),
       axis.ticks.y = element_blank(),
-      axis.text.x = element_text(color = elements, family = f3),
+      axis.text.x = element_text(color = elements, 
+                                 family = f3),
       panel.grid = element_blank(),
       panel.background = element_rect(fill = bg),
-      plot.background = element_rect(fill = bg, color = bg)
+      plot.background = element_rect(fill = bg, color = bg),
+      plot.margin = margin(2, 0, 2, 0, "cm")
     )
 }
 ```
@@ -49,39 +54,57 @@ best <-
   filter(between(best_rank, 1, 15)) %>% 
   ggplot(aes(total_weeks, best_rank, group = best_rank)) +
   scale_y_reverse(limits = c(16, 0)) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(seq(0, 175, by = 25))) +
   geom_boxplot(
     color = elements
     ) +
-  theme_bestsellers()
+  theme_bestsellers() +
+  ggtitle("Best rank")
 
 debut <- 
   nyt_titles %>% 
   filter(between(debut_rank, 1, 15)) %>% 
   ggplot(aes(total_weeks, debut_rank, group = debut_rank)) +
   scale_y_reverse(limits = c(16, 0), breaks = c(1:15)) +
+  scale_x_continuous(breaks = c(seq(0, 175, by = 25))) +
   geom_boxplot(
     color = elements
   ) +
   theme_bestsellers() + 
   theme(
     axis.text.y = element_text(hjust = .5, color = elements, family = f3)
-  ) 
+  ) +
+  ggtitle("Debut rank")
 
-best + debut & plot_annotation(
-  theme = theme(
-    plot.background = element_rect(fill = bg,
-                                   color = bg),
-    plot.margin = margin(5, 2, 2.5, 2, "cm")
-    )
-  )
+plot <- 
+  best + debut & plot_annotation(
+  theme = theme(title = element_text(size = 20),
+                plot.background = element_rect(fill = bg, color = bg),
+                plot.margin = margin(1, 2, 1, 2, "cm"))) 
 ```
 
 ## Annotations
 
 ```{r}
-  title = "Bestsellers list",
-  subtitle = "Even though the best rank that a title can achieve is directly related to the number of weeks on the NY times bestsellers list,\nthe rank with which the book started has no relation with the amount of time is gonna stay there.",
+plot +
+  plot_annotation(
+    title = "Bestsellers list",
+    subtitle = "Even though the best rank that a title can achieve is directly related to\nthe number of weeks on the NY times bestsellers list, the rank with which\nthe book started has no relation with the amount of time is gonna stay there.",
+    caption = "Number of weeks on the list"
+    ) &
+  theme(
+    plot.title = element_text(family = f2, 
+                              size = 25, 
+                              margin = margin(15, 0, 10, 0)),
+    plot.subtitle = element_text(family = f3, 
+                                 size = 16, 
+                                 lineheight = 1.1,
+                                 margin = margin(0, 0, -30, 0)),
+    plot.caption = element_text(hjust = 0.5, 
+                                family = f2, 
+                                size = 15, 
+                                margin = margin(-10, 0, 10, 0))
+  )
 ```
 
 ```{r}
