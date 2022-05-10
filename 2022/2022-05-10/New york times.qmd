@@ -1,7 +1,7 @@
 # NY Times bestsellers list
 
 ```{r}
-pacman::p_load(tidyverse, here, sysfonts, patchwork, cowplot, ggimage)
+pacman::p_load(tidyverse, here, sysfonts, patchwork, magick)
 ```
 
 ```{r}
@@ -106,8 +106,8 @@ plot <-
 final <- 
   plot +
   plot_annotation(
-    title = "New York Times Best Sellers List",
-    subtitle = "Even though the best rank that a title can achieve is, on average, directly related to\nthe number of weeks on the New York Times Best Sellers List, the rank with which the\nbook made it to the list has no relation with the amount of time is gonna stay there.",
+    title = "How many time is gonna stay there?",
+    subtitle = "While the best rank a title can achieve is, on average, directly related to the number\nof weeks on the New York Times bestseller list, the position with which the book entered\nthe list has no bearing on how long is going to stay there.",
     caption = "Number of weeks on the list"
     ) &
   theme(
@@ -132,4 +132,14 @@ ggsave(
   width = 30,
   units = "cm"
   )
+```
+
+```{r}
+final_plot <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/plot.png")
+
+logo <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/nyt_logo.png") %>% 
+  image_resize(500)
+
+final_plot %>% 
+  image_composite(logo, offset = "+3200+0")
 ```
