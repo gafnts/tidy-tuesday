@@ -134,6 +134,8 @@ ggsave(
   )
 ```
 
+## Adding NY Times logo
+
 ```{r}
 final_plot <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/plot.png")
 
