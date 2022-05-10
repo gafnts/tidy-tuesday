@@ -4,8 +4,6 @@
 pacman::p_load(tidyverse, here, sysfonts, patchwork, cowplot, ggimage)
 ```
 
-## Import
-
 ```{r}
 nyt_titles <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_titles.tsv') %>% 
   mutate(title = str_to_title(title))
@@ -20,11 +18,12 @@ nyt_full <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytues
 # Colors
 bg = "#D9D9D9"
 elements = "#262626"
+highlight = "#BF7D65"
 
 # Fonts
-f1 <- "Noto Sans SemiBold"
-f2 <- "Noto Sans Bold"
-f3 <- "Noto Sans"
+f1 = "Noto Sans SemiBold"
+f2 = "Noto Sans Bold"
+f3 = "Noto Sans"
 
 # Theme
 theme_bestsellers <- function(...) {
@@ -46,7 +45,7 @@ theme_bestsellers <- function(...) {
 }
 ```
 
-## Base plot
+## Plot
 
 ```{r}
 best <- 
@@ -59,7 +58,18 @@ best <-
     color = elements
     ) +
   theme_bestsellers() +
-  ggtitle("Best rank")
+  ggtitle("Best rank") +
+  annotate(geom = "curve", x = 165, y = 3, xend = 177.3, yend = 1.4, color = highlight,
+           curvature = -.3, arrow = arrow(length = unit(2, "mm"))) +
+  annotate(geom = "text", 
+           x = 162, 
+           y = 3.5, 
+           label = "Oh, the places\nyou'll go!", 
+           hjust = "left",
+           color = highlight,
+           family = f1,
+           size = 3.5) +
+  annotate(geom = "point", x = 178, y = 1, color = highlight)
 
 debut <- 
   nyt_titles %>% 
@@ -74,22 +84,30 @@ debut <-
   theme(
     axis.text.y = element_text(hjust = .5, color = elements, family = f3)
   ) +
-  ggtitle("Debut rank")
+  ggtitle("Debut rank") +
+  annotate(geom = "curve", x = 160, y = 14, xend = 175, yend = 14.1, color = highlight,
+           curvature = .3, arrow = arrow(length = unit(2, "mm"))) +
+  annotate(geom = "text", 
+           x = 133, 
+           y = 13.5, 
+           label = "Oh, the places\nyou'll go!", 
+           hjust = "left",
+           color = highlight,
+           family = f1,
+           size = 3.5) +
+  annotate(geom = "point", x = 178, y = 14, color = highlight)
 
 plot <- 
   best + debut & plot_annotation(
   theme = theme(title = element_text(size = 20),
                 plot.background = element_rect(fill = bg, color = bg),
                 plot.margin = margin(1, 2, 1, 2, "cm"))) 
-```
 
-## Annotations
-
-```{r}
-plot +
+final <- 
+  plot +
   plot_annotation(
-    title = "Bestsellers list",
-    subtitle = "Even though the best rank that a title can achieve is directly related to\nthe number of weeks on the NY times bestsellers list, the rank with which\nthe book started has no relation with the amount of time is gonna stay there.",
+    title = "New York Times Best Sellers List",
+    subtitle = "Even though the best rank that a title can achieve is, on average, directly related to\nthe number of weeks on the New York Times Best Sellers List, the rank with which the\nbook made it to the list has no relation with the amount of time is gonna stay there.",
     caption = "Number of weeks on the list"
     ) &
   theme(
@@ -97,17 +115,15 @@ plot +
                               size = 25, 
                               margin = margin(15, 0, 10, 0)),
     plot.subtitle = element_text(family = f3, 
-                                 size = 16, 
+                                 size = 14, 
                                  lineheight = 1.1,
                                  margin = margin(0, 0, -30, 0)),
     plot.caption = element_text(hjust = 0.5, 
                                 family = f2, 
                                 size = 15, 
-                                margin = margin(-10, 0, 10, 0))
+                                margin = margin(-20, 0, 10, 0))
   )
-```
 
-```{r}
 ggsave(
   filename = "plot.png",
   path = here("2022", "2022-05-10"),
