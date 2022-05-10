@@ -106,7 +106,7 @@ plot <-
 final <- 
   plot +
   plot_annotation(
-    title = "How many time is gonna stay there?",
+    title = "How many weeks is gonna stay there?",
     subtitle = "While the best rank a title can achieve is, on average, directly related to the number\nof weeks on the New York Times bestseller list, the position with which the book entered\nthe list has no bearing on how long is going to stay there.",
     caption = "Number of weeks on the list"
     ) &
