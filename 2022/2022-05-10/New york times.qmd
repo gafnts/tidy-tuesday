@@ -137,11 +137,15 @@ ggsave(
 ## Adding NY Times logo
 
 ```{r}
-final_plot <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/plot.png")
+final_plot <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/plot_no_logo.png")
 
 logo <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2022/2022-05-10/nyt_logo.png") %>% 
   image_resize(500)
 
 final_plot %>% 
-  image_composite(logo, offset = "+3200+0")
+  image_composite(logo, offset = "+3200+0") %>% 
+  image_annotate("Source: Jordan Pruett (Post45 Data) | Visualization: Gabriel Fuentes", 
+                 location = "+2555+2400",
+                 size = 35,
+                 font = f3)
 ```
