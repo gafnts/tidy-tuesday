@@ -1,12 +1,96 @@
 # NY Times bestsellers list
 
 ```{r}
-pacman::p_load(tidyverse, magrittr, here, gganimate)
+pacman::p_load(tidyverse, here, sysfonts, patchwork)
 ```
 
 ## Import
 
 ```{r}
-nyt_titles <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_titles.tsv')
-nyt_full <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_full.tsv')
+nyt_titles <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_titles.tsv') %>% 
+  mutate(title = str_to_title(title))
+
+nyt_full <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_full.tsv') %>% 
+  mutate(title = str_to_title(title))
+```
+
+## General params
+
+```{r}
+# Colors
+bg = "#D9D9D9"
+elements = "#262626"
+
+# Fonts
+f1 <- "Noto Sans SemiBold"
+f2 <- "Noto Sans Bold"
+f3 <- "Noto Sans"
+
+# Theme
+theme_bestsellers <- function(...) {
+    theme(
+      text = element_text(size = 16, family = f3),
+      axis.title = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_text(color = elements, family = f3),
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = bg),
+      plot.background = element_rect(fill = bg, color = bg)
+    )
+}
+```
+
+## Base plot
+
+```{r}
+best <- 
+  nyt_titles %>% 
+  filter(between(best_rank, 1, 15)) %>% 
+  ggplot(aes(total_weeks, best_rank, group = best_rank)) +
+  scale_y_reverse(limits = c(16, 0)) +
+  scale_x_reverse() +
+  geom_boxplot(
+    color = elements
+    ) +
+  theme_bestsellers()
+
+debut <- 
+  nyt_titles %>% 
+  filter(between(debut_rank, 1, 15)) %>% 
+  ggplot(aes(total_weeks, debut_rank, group = debut_rank)) +
+  scale_y_reverse(limits = c(16, 0), breaks = c(1:15)) +
+  geom_boxplot(
+    color = elements
+  ) +
+  theme_bestsellers() + 
+  theme(
+    axis.text.y = element_text(hjust = .5, color = elements, family = f3)
+  ) 
+
+best + debut & plot_annotation(
+  theme = theme(
+    plot.background = element_rect(fill = bg,
+                                   color = bg),
+    plot.margin = margin(5, 2, 2.5, 2, "cm")
+    )
+  )
+```
+
+## Annotations
+
+```{r}
+  title = "Bestsellers list",
+  subtitle = "Even though the best rank that a title can achieve is directly related to the number of weeks on the NY times bestsellers list,\nthe rank with which the book started has no relation with the amount of time is gonna stay there.",
+```
+
+```{r}
+ggsave(
+  filename = "plot.png",
+  path = here("2022", "2022-05-10"),
+  dpi = 320,
+  height = 20,
+  width = 30,
+  units = "cm"
+  )
 ```
