@@ -145,7 +145,7 @@ logo <- image_read("https://raw.githubusercontent.com/gafnts/tidy-tuesday/main/2
 final_plot %>% 
   image_composite(logo, offset = "+3200+0") %>% 
   image_annotate("Source: Jordan Pruett (Post45 Data) | Visualization: Gabriel Fuentes", 
-                 location = "+2555+2400",
+                 location = "+2580+2410",
                  size = 35,
                  font = f3)
 ```
