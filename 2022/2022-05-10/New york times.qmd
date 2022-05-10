@@ -1,0 +1,12 @@
+# NY Times bestsellers list
+
+```{r}
+pacman::p_load(tidyverse, magrittr, here, gganimate)
+```
+
+## Import
+
+```{r}
+nyt_titles <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_titles.tsv')
+nyt_full <- readr::read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-05-10/nyt_full.tsv')
+```
