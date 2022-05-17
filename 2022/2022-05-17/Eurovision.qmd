@@ -67,30 +67,29 @@ weights <-
 ### Chord diagram
 
 ```{r}
-pacman::p_load(circlize, chorddiag, viridis, patchwork, hrbrthemes)
+pacman::p_load(circlize, MetBrewer)
 ```
 
 ```{r}
 # Params
 circos.clear()
-circos.par(start.degree = 90, 
-           gap.degree = 4, 
+circos.par(start.degree = 45, 
+           gap.degree = 1, 
            track.margin = c(-0.1, 0.1), 
            points.overflow.warning = FALSE)
-par(mar = rep(0, 4))
+par(mar = rep(0, 4), bg = "transparent")
 
-color <- viridis(15, alpha = 1, begin = 0, end = 1, option = "D")
-color <- mycolor[sample(1:15)]
+hiroshige <- met.brewer("Hiroshige", n = 15, type = "continuous")
 ```
 
 ```{r}
 # Base plot
 chordDiagram(
   x = weights, 
-  grid.col = color,
+  grid.col = hiroshige,
   transparency = 0.15,
   directional = 1,
-  direction.type = c("arrows", "diffHeight"), 
+  direction.type = c("diffHeight", "arrows"), 
   diffHeight  = 0,
   annotationTrackHeight = c(0.15, 0.1),
   link.arr.type = "big.arrow", 
@@ -100,15 +99,14 @@ chordDiagram(
 ```
 
 ```{r}
-png("my_plot.png", width = 1920, height = 1080) 
+png("my_plot.png", width = 1920 * 3.5, height = 1080 * 3.5, res = 700, bg = "transparent")
 
-# Base plot
 chordDiagram(
   x = weights, 
-  grid.col = mycolor,
-  transparency = 0.25,
+  grid.col = color,
+  transparency = 0.15,
   directional = 1,
-  direction.type = c("arrows", "diffHeight"), 
+  direction.type = c("diffHeight", "arrows"), 
   diffHeight  = 0,
   annotationTrackHeight = c(0.15, 0.1),
   link.arr.type = "big.arrow", 
