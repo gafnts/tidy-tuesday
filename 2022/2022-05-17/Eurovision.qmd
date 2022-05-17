@@ -77,33 +77,22 @@ circos.par(start.degree = 45,
            gap.degree = 1, 
            track.margin = c(-0.1, 0.1), 
            points.overflow.warning = FALSE)
-par(mar = rep(0, 4), bg = "transparent")
+
+par(mar = rep(0, 4), 
+    bg = "transparent",
+    family = "Noto Sans")
 
 hiroshige <- met.brewer("Hiroshige", n = 15, type = "continuous")
 ```
 
 ```{r}
-# Base plot
+png(here("2022", "2022-05-17", "chord_diagram.png"), 
+    width = 1920 * 3.5, height = 1920 * 3.5, 
+    res = 1000, bg = "transparent")
+
 chordDiagram(
   x = weights, 
   grid.col = hiroshige,
-  transparency = 0.15,
-  directional = 1,
-  direction.type = c("diffHeight", "arrows"), 
-  diffHeight  = 0,
-  annotationTrackHeight = c(0.15, 0.1),
-  link.arr.type = "big.arrow", 
-  link.sort = TRUE, 
-  link.largest.ontop = TRUE
-  )
-```
-
-```{r}
-png("my_plot.png", width = 1920 * 3.5, height = 1080 * 3.5, res = 700, bg = "transparent")
-
-chordDiagram(
-  x = weights, 
-  grid.col = color,
   transparency = 0.15,
   directional = 1,
   direction.type = c("diffHeight", "arrows"), 
