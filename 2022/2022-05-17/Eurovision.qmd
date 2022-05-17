@@ -64,7 +64,7 @@ weights <-
   drop_na()
 ```
 
-### Chord diagram
+### Base chord diagram
 
 ```{r}
 pacman::p_load(circlize, MetBrewer)
@@ -87,8 +87,8 @@ hiroshige <- met.brewer("Hiroshige", n = 15, type = "continuous")
 
 ```{r}
 png(here("2022", "2022-05-17", "chord_diagram.png"), 
-    width = 1920 * 3.5, height = 1920 * 3.5, 
-    res = 1000, bg = "transparent")
+    width = 1080 * 3.5, height = 1080 * 3.5, 
+    res = 550, bg = "transparent")
 
 chordDiagram(
   x = weights, 
@@ -105,3 +105,11 @@ chordDiagram(
 
 dev.off()
 ```
+
+### Final plot
+
+```{r}
+
+```
+
+### 
