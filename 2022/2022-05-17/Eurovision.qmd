@@ -98,13 +98,14 @@ chord_diagram <-
 
 ```{r}
 chord_diagram + 
-  labs(title = "How did the <b style='color:#3D739C'>15 more voted countries</b> 
-       voted<br>in the <b style='color:#F2C073'>Eurovision</b> grand final?", 
+  labs(title = "How did the <b style='color:#3D739C'>15 countries</b> 
+       that received the most<br>votes cast theirs in the 
+       <b style='color:#F2C073'>Eurovision grand final</b>?", 
        subtitle = "Turin, 2022\n",
        caption = "Source: Data.World") +
   theme(
     text = element_text(family = "Circular Std Book"),
-    plot.title = element_markdown(size = 16, 
+    plot.title = element_markdown(size = 15, 
                                   family = "Circular Std Black",
                                   lineheight = 1.3,
                                   margin = margin(t = 25, b = -15)),
